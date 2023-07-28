@@ -37,20 +37,46 @@ sys_wait(void)
     return -1;
   return wait(p);
 }
-
 uint64
 sys_sbrk(void)
 {
   int addr;
   int n;
-
   if(argint(0, &n) < 0)
     return -1;
-  addr = myproc()->sz;
-  if(growproc(n) < 0)
-    return -1;
+
+  struct proc *p = myproc();
+  addr = p->sz;
+  p->sz += n;
+  if(n < 0) {
+    p->sz = uvmdealloc(p->pagetable, addr, addr + n);
+  }
+  // if(growproc(n) < 0)
+  //  return -1;
   return addr;
 }
+
+//uint64
+//sys_sbrk(void)
+//{
+ // uint64 addr;
+  //int n;
+
+  //if(argint(0, &n) < 0)
+    //return -1;
+  //struct proc* p = myproc();
+  //addr = p->sz;
+  //if (p->sz + n >= MAXVA || p->sz + n < 0) {
+    //return addr;
+  //}
+
+  //if (n < 0) {
+    //uvmdealloc(p->pagetable, addr, addr + n);
+  //}
+  //p->sz = p->sz + n;
+  //return addr;
+//}
+
 
 uint64
 sys_sleep(void)
