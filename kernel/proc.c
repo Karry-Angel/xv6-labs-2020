@@ -108,26 +108,19 @@ found:
   p->pid = allocpid();
 
   // Allocate a trapframe page.
-  if((p->trapframe = (struct trapframe *)kalloc()) == 0){
-    release(&p->lock);
-    return 0;
+ // begin++++++
+  if((p->alarmtrapframe = (struct trapframe *)kalloc()) == 0){
+      release(&p->lock);
+      return 0;
   }
 
-  // An empty user page table.
-  p->pagetable = proc_pagetable(p);
-  if(p->pagetable == 0){
-    freeproc(p);
-    release(&p->lock);
-    return 0;
-  }
-
-  // Set up new context to start executing at forkret,
-  // which returns to user space.
-  memset(&p->context, 0, sizeof(p->context));
-  p->context.ra = (uint64)forkret;
-  p->context.sp = p->kstack + PGSIZE;
+  p->tickspass = 0;
+  p->alarmticks = 0;
+  p->alarmhandler = 0;
+  p->accessable = 1;
 
   return p;
+  // end++++++  
 }
 
 // free a proc structure and the data hanging from it,
@@ -150,6 +143,11 @@ freeproc(struct proc *p)
   p->killed = 0;
   p->xstate = 0;
   p->state = UNUSED;
+     // begin++++ 
+ if(p->alarmtrapframe)
+      kfree((void*)p->alarmtrapframe);
+  p->alarmtrapframe=0;
+ // end+++++
 }
 
 // Create a user page table for a given process,

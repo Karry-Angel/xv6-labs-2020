@@ -1,0 +1,6 @@
+1.register a0~a7 ; register a2 hold 13
+2.call of f in main is direct inline as imm number 12; call of g in f is inline in line 31~35
+3.in 0x630
+4.0x38
+5.Hello World; 0x726c6400; no need to change
+6.the value stored in a2 register,因为printf会从a2寄存器中读取第三个参数作为y的值。
