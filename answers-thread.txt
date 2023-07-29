@@ -1,0 +1,17 @@
+Q: Why are there missing keys with 2 threads, but not with 1 thread?
+A: Because the function should also be tested with multiple threads.
+
+Q: Identify a sequence of events with 2 threads that can lead to a key being missing. 
+A: when two thread call insert in the same time, and set e->next to the same entry, but in the end, only one entry can be the head of list.
+
+$ ./ph 1
+100000 puts, 5.396 seconds, 18532 puts/ second
+0: 0 keys missing
+100000 gets, 5.291 seconds, 18901 gets/ second
+$ ./ph 2
+100000 puts, 2.818 seconds, 35488 puts/ second
+0:
+16742 keys missing
+1:
+16742 keys missing
+200000 gets, 6.568 seconds, 30451 gets / second
