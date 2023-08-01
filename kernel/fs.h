@@ -1,5 +1,8 @@
 #define NDOUBLYINDIRECT (NINDIRECT * NINDIRECT)     // add
 
+// the max depth of symlinks - lab9-2
+#define NSYMLINK 10
+
 // On-disk file system format.
 // Both the kernel and user programs use this header file.
 
