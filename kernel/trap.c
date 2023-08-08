@@ -76,23 +76,27 @@ usertrap(void)
   if(p->killed)
     exit(-1);
 
-  // give up the CPU if this is a timer interrupt.
-  if(which_dev == 2) {
-      p->tickspass++;
-      if (p->alarmticks != 0 && p->tickspass == p->alarmticks) {
-          // return to user space to call the alarm function
-          p->tickspass = 0;
-          if (p->accessable == 1) {
-              memmove(p->alarmtrapframe, p->trapframe, sizeof(struct trapframe));
-              p->trapframe->epc = p->alarmhandler;
-              p->accessable = 0;
-          }
-      } else {
+  // give up the CPU if this is a timer interrupt.   //add begin
+  if(which_dev == 2){
+    if(p->alarm != 0){
+      p->duration++;
+      if(p->duration == p->alarm){
+        p->duration = 0;
+        if(p->alarm_trapframe == 0){
+          p->alarm_trapframe = kalloc();
+          memmove(p->alarm_trapframe, p->trapframe, 512);
+          p->trapframe->epc = p->handler;
+        }else{
           yield();
+        }
+      }else{
+        yield();
       }
+    }else{
+      yield();
+    }
   }
-
-
+//add end
   usertrapret();
 }
 
@@ -230,4 +234,3 @@ devintr()
     return 0;
   }
 }
-
