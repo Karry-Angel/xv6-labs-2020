@@ -103,5 +103,5 @@ struct proc {
   struct file *ofile[NOFILE];  // Open files
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
-  pagetable_t kernelpgtbl;     // Kernel page table （在 proc 中添加该 field）
+  pagetable_t kpagetable;      // kernel pagetable - lab3-1
 };
